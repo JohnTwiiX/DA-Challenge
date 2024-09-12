@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Meine To-Dos</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="create">To-Do hinzufügen</button>
+</form>
+
+<ul>
+    {% for todo in todos %}
+    <li>
+        <strong>{{ todo.title }}</strong>
+        <p>{{ todo.description }}</p>
+        <p>Status: {% if todo.completed %}Erledigt{% else %}Offen{% endif %}</p>
+        <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="todo_id" value="{{ todo.id }}">
+            <button type="submit" name="update">
+                {% if todo.completed %}Markiere als Offen{% else %}Markiere als Erledigt{% endif %}
+            </button>
+        </form>
+        <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="todo_id" value="{{ todo.id }}">
+            <button type="submit" name="delete"
+                onclick="return confirm('Bist du sicher, dass du dieses To-Do löschen möchtest?');">
+                Löschen
+            </button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
